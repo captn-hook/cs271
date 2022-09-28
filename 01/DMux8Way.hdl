@@ -4,10 +4,15 @@
 // File name: projects/01/DMux8Way.hdl
 
 /**
- * 8-way demultiplexor:
+ * 8-way demultiplexor:       state 1
  * {a, b, c, d, e, f, g, h} = {in, 0, 0, 0, 0, 0, 0, 0} if sel == 000
  *                            {0, in, 0, 0, 0, 0, 0, 0} if sel == 001
- *                            etc.
+ *                            {0, 0, in, 0, 0, 0, 0, 0} if sel == 010
+ *                            {0, 0, 0, in, 0, 0, 0, 0} if sel == 011
+                                           state 2
+ *                            {0, 0, 0, 0, in, 0, 0, 0} if sel == 100 
+ *                            {0, 0, 0, 0, 0, in, 0, 0} if sel == 101
+ *                            {0, 0, 0, 0, 0, 0, in, 0} if sel == 110
  *                            {0, 0, 0, 0, 0, 0, 0, in} if sel == 111
  */
 
@@ -17,4 +22,11 @@ CHIP DMux8Way {
 
     PARTS:
     // Put your code here:
+
+    DMux(in=in, sel=sel[2], a=state1, b=state2);
+
+    DMux4Way(in=state1, sel=sel[0..1], a=a, b=b, c=c, d=d);
+
+    DMux4Way(in=state2, sel=sel[0..1], a=e, b=f, c=g, d=h);
+    
 }
