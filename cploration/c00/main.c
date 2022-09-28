@@ -7,7 +7,7 @@
 #include <stdio.h>
 int main() {
     //prints 
-    printf("Hello, World!");
+    printf("Hello world!\n");
     // exits with no error
     return 0;
     }
