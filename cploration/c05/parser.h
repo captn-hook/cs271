@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <bool.h>
+#include <stdbool.h>
 
 #define MAX_LINE_LENGTH  200
 
@@ -22,4 +22,5 @@ bool is_Atype(const char *);
 
 bool is_label(const char *);
 
-bool is_Ctype(const char *);
+/*redundant
+bool is_Ctype(const char *); */
