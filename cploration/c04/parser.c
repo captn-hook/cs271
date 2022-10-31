@@ -60,7 +60,7 @@ void parse(FILE * file){
 
 		} else {
 
-		printf("[%04d]: %s\n", line_num, line);
+		printf("%s\n", line);
 		
 		}
 
