@@ -12,3 +12,57 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+(RESTART)
+@SCREEN
+D=A
+@0
+M=D // M[0] = SCREEN	
+
+(KBDCHECK)
+@KBD
+
+D=M
+@BLACK
+D;JGT	// if D > 0 goto BLACK
+@WHITE
+D;JEQ	// if D == 0 goto WHITE
+
+@KBDCHECK
+0;JMP
+
+(BLACK)
+@1
+M=-1	// (-1=11111111111111)
+@CHANGE
+0;JMP
+
+(WHITE)
+@1
+M=0	// (0=00000000000000)
+@CHANGE
+0;JMP
+
+(CHANGE)
+@1	
+D=M	// D = M[1]
+
+@0
+A=M	// A = M[0]
+M=D
+
+@0
+D=M+1	
+@KBD
+D=A-D	//SCREEN=A
+
+@0
+M=M+1	//++
+A=M
+
+@CHANGE
+D;JGT	// if D > 0 goto CHANGE
+
+
+@RESTART
+0;JMP
