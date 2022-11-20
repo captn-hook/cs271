@@ -1,11 +1,5 @@
-/****************************************
- * C-ploration 4 for CS 271
- * 
- * [NAME] $YOUR_NAME$
- * [TERM] FALL $YEAR$
- * 
- ****************************************/
 #include "parser.h"
+#include "symtable.h"
 #include "error.h"
 
 int main(int argc, const char *argv[])

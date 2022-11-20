@@ -11,7 +11,7 @@ int hash(char *str){
     unsigned long hash = 5381;
     int c;
 
-    while (c = *str++)
+    while (c == *str++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash % SYMBOL_TABLE_SIZE;
@@ -33,7 +33,7 @@ void symtable_insert(char* key, hack_addr addr) {
     item->name[i] = '\0';
 
     //get the hash 
-    int hashIndex = hashCode(key);
+    int hashIndex = hash(key);
 
     //move in array until an empty or deleted cell
     while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->name != -1) {
@@ -75,7 +75,7 @@ void symtable_display_table(){
     for(i = 0; i<SYMBOL_TABLE_SIZE; i++) {
 	
         if(hashArray[i] != NULL)
-            printf(" (%d,%d)", hashArray[i]->name, hashArray[i]->addr);
+            printf(" (%s,%d)", hashArray[i]->name, hashArray[i]->addr);
         else
             printf(" ~~ ");
     }

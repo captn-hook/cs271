@@ -1,12 +1,4 @@
-/****************************************
- * C-ploration 4 for CS 271
- * 
- * [NAME] $YOUR_NAME$
- * [TERM] FALL $YEAR$
- * 
- ****************************************/
 #include "parser.h"
-#include "error.h"
 
 enum instr_type {
 	invalid = -1,
@@ -125,7 +117,7 @@ void parse(FILE * file){
 
 			}
 
-				printf("%u: %c  %s\n", instr_num, inst_type, line_num);
+				printf("%u: %c  %s\n", instr_num, inst_type, line);
 			
 		}
 
