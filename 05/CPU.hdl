@@ -40,4 +40,70 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
-}
+
+    
+    //insts
+    Not(in=instruction[15], out=insta);
+
+    Not(in=insta, out=cout);
+    
+
+
+    //save inst
+    And(a=cout, b=instruction[5], out=ALUa);
+
+
+    Mux16(a=instruction, b=ALUout, sel=ALUa, out=aReg);
+    
+    //load reg
+    Or(a=insta, b=ALUa, out=loada);
+    ARegister(in=aReg, load=loada, out=outa);
+    
+    //int 12 bit
+    Mux16(a=outa, b=inM, sel=instruction[12], out=am);
+
+    And(a=cout, b=instruction[4], out=loadd);
+    //d reg?
+    DRegister(in=ALUout, load=loadd, out=outd);   
+
+    // ALU -----------------------------------------------------/-------------------------------------------------------/--------ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+    ALU(x=outd, y=am, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUout, zr=outz, ng=NGout); // calculate
+
+    
+    //pc
+    
+//outputs
+    Or16(a=false, b=outa, out[0..14]=addressM);
+
+    Or16(a=false, b=ALUout, out=outM);
+
+
+/* (When writeM==0, any value may 
+ * appear in outM). The outM and writeM outputs are combinational: 
+    And(a=cout, b=instruction[3], out=writeM);
+    
+
+
+*/
+
+//l o g i c
+    And(a=outz, b=instruction[1], out=jump1);    
+    And(a=NGout, b=instruction[2], out=jump2);   
+
+    Or(a=outz, b=NGout, out=nullcheck);
+
+
+    Not(in=nullcheck, out=positive);            
+    And(a=positive, b=instruction[0], out=jump4); 
+
+    Or(a=jump1, b=jump2, out=jump3);
+
+    Or(a=jump3, b=jump4, out=jumpa);             
+    
+//if c
+    And(a=cout, b=jumpa, out=pcload); 
+
+    Not(in=pcload, out=pcinc);                
+
+    PC(in=outa, inc=pcinc, load=pcload, reset=reset, out[0..14]=pc);
+    }
