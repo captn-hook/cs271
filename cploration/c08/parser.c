@@ -49,6 +49,30 @@ char *strip(char *s){
     return s;	
 }
 
+
+char *strip2(char *s){	
+
+	unsigned int x = strlen(s) + 1;
+
+	char s_new[x];
+
+	unsigned int line_num = 0;
+
+	for (char *s2 = s; *s2; s2++) {
+		if (*s2 == '/' && *(s2 + 1) == '/') {
+			break;
+		} else if (*s2 != '(' && *s2 != ')') {
+			s_new[line_num++] = *s2;
+		}		
+	}
+
+	s_new[line_num] = '\0';
+
+	strcpy(s, s_new);
+	
+    return s;	
+}
+
 /* Function: parse
  * -------------
  * iterate each line in the file and strip whitespace and comments. 
@@ -93,18 +117,19 @@ void parse(FILE * file){
 
 				extract_label(line, label);
 
-				if (isalpha(label[0])) {
+				if (!isalpha(label[0])) {
+					//test driven development ig
+					strip2(line);
 					exit_program(EXIT_INVALID_LABEL, line_num, line);
-				}
-
-				if (symtable_find(label) != NULL) {
+				} else if (symtable_find(label) != NULL) {
 					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
-				}
+				} else {
 
 				symtable_insert(label, instr_num);
 
 				continue;
-
+				}
+				
 				inst_type = 'L';
 
 				//printf("%c  %s\n", inst_type, label);
@@ -118,10 +143,12 @@ void parse(FILE * file){
 			}
 
 				printf("%u: %c  %s\n", instr_num, inst_type, line);
+
+
+		instr_num++;
 			
 		}
 
-		instr_num++;
 
 	}
 	
