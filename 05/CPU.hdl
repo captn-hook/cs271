@@ -58,6 +58,7 @@ CHIP CPU {
 
     DRegister(in=ALUout, load=loadd, out=outd);   
 
+    //
     //alu ======================================/----------------------------------------------------------------------------------------------/=================================
 
     ALU(x=outd, y=outam, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUout, zr=outzr, ng=outng); 
