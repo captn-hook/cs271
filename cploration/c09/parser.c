@@ -87,7 +87,7 @@ void parse(FILE * file){
 
 		strip(line);
 
-		if (*line == NULL) {
+		if (*line == '\0') {
 
 		} else {
 
@@ -199,11 +199,11 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 		//not a number
 		*instr->value.symbol = (char*)malloc(strlen(line));
 
-		strcpy(instr->value.symbol, s);
+		strcpy(*instr->value.symbol, s);
 
 		instr->is_addr = false;
 
-	} else if (&s_end != NULL) {
+	} else if (*s_end != 0) {
 		return false;	
 	} else {
 		instr->value.addr = result;

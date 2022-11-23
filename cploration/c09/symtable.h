@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #define SYMBOL_TABLE_SIZE 1000
 #define MAX_NAME_SIZE 100

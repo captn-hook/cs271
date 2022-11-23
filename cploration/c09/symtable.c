@@ -9,7 +9,7 @@ struct Symbol* item;
 
 int hash(char *str){
     unsigned long hash = 5381;
-    int c;
+    int c = 0;
 
     while (c == *str++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
@@ -30,7 +30,7 @@ void symtable_insert(char* key, hack_addr addr) {
 
     //move in array until an empty or deleted cell
 
-    while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->name != -1) {
+    while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->name != NULL) {
         //go to next cell
         ++hashIndex;
 		
