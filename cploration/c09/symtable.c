@@ -22,20 +22,14 @@ void symtable_insert(char* key, hack_addr addr) {
     
     struct Symbol *item = (struct Symbol*) malloc(sizeof(struct Symbol));
     item->addr = addr;  
-
-    //set each index of name to key
-    int i = 0;
-    while(key[i] != '\0'){
-        item->name[i] = key[i];
-        i++;
-    }
-
-    item->name[i] = '\0';
+    //item->name = (char*)malloc(strlen(key) + 1);
+    strcpy(item->name, key);
 
     //get the hash 
     int hashIndex = hash(key);
 
     //move in array until an empty or deleted cell
+
     while(hashArray[hashIndex] != NULL && hashArray[hashIndex]->name != -1) {
         //go to next cell
         ++hashIndex;
@@ -74,13 +68,14 @@ void symtable_display_table(){
 	
     for(i = 0; i<SYMBOL_TABLE_SIZE; i++) {
 	
-        if(hashArray[i] != NULL)
-            printf(" (%s,%d)", hashArray[i]->name, hashArray[i]->addr);
-        else
-            printf(" ~~ ");
+        if(hashArray[i] != NULL) {
+            printf(" (%s,%d)\n", hashArray[i]->name, hashArray[i]->addr);
+         } else {
+         //   printf(" ~~ ");
     }
 	
-    printf("\n");
+    //printf("\n");
+}
 }
 
 void symtable_print_labels(){

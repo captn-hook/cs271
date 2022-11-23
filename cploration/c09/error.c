@@ -15,6 +15,7 @@ void exit_program(enum exitcode code, ...)
     va_list arguments;
     va_start(arguments, code);
 
+    printf("\n");
     printf("ERROR: ");
     vfprintf(stdout, error_messages[code], arguments);
     printf("\n");

@@ -65,7 +65,7 @@ char *strip2(char *s){
  */
 void parse(FILE * file){
 
-	a_instruction instr;
+	instruction instr;
 	
 	char line[MAX_LINE_LENGTH] = {0};
 
@@ -91,17 +91,16 @@ void parse(FILE * file){
 
 		} else {
 
-			char inst_type;
-
 		if (is_Atype(line)) {
 
-				inst_type = 'A';
+				instr.type = Atype;
 
-				if (!parse_A_instruction(line, &instr)){
+				if (!parse_A_instruction(line, &instr.instr.a)){
     				exit_program(EXIT_INVALID_A_INSTR, line_num, line);
  				}
 
-				//printf("%c  %s\n", inst_type, line);
+				//symtable_insert(instr.instr.a.value.symbol, instr_num);
+				//printf("%c  %s\n", instr.instr.a.value.symbol, line);
 
 			} else if (is_label(line)) {
 
@@ -120,13 +119,12 @@ void parse(FILE * file){
 				continue;
 				}
 				
-				inst_type = 'L';
-
+			
 				//printf("%c  %s\n", inst_type, label);
 
 			} else {
 
-				inst_type = 'C';
+				instr.type = Ctype;
 
 				//printf("%c  %s\n", inst_type, line);
 
@@ -187,7 +185,7 @@ void add_predefined_symbols() {
 
 bool parse_A_instruction(const char *line, a_instruction *instr) {
 
-	char *s = malloc(strlen(line));
+	char *s = (char*)malloc(strlen(line));
 
 	strcpy(s, line + 1);
 
@@ -195,17 +193,17 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 
 	long result = strtol(s, &s_end, 10);
 
-	printf("%s\n", s_end);
+	//printf("%s\n", s_end);
 
-	if (s_end == s) {
+	if (strcmp(s, s_end)) {
 		//not a number
-		*instr->value.symbol = malloc(strlen(line));
+		*instr->value.symbol = (char*)malloc(strlen(line));
 
 		strcpy(instr->value.symbol, s);
 
 		instr->is_addr = false;
 
-	} else if (*s_end != NULL) {
+	} else if (&s_end != NULL) {
 		return false;	
 	} else {
 		instr->value.addr = result;
