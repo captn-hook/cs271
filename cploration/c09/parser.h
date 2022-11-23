@@ -10,6 +10,7 @@
 
 #include "error.h"
 #include "symtable.h"
+#include "hack.h"
 
 #define MAX_LINE_LENGTH  200
 #define MAX_LABEL_LENGTH  (MAX_LINE_LENGTH - 2)
@@ -30,6 +31,10 @@ bool is_Atype(const char *);
 bool is_label(const char *);
 
 char *extract_label(const char *, char*);
+
+void add_predefined_symbols();
+
+bool parse_A_instruction(const char *line, a_instruction *instr)
 
 /*redundant
 bool is_Ctype(const char *); */

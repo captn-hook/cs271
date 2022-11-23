@@ -16,6 +16,7 @@ typedef struct {
 typedef struct {
    opcode a:1;
    hack_addr addr:15;
+   bool is_addr;
 } a_instruction;
 
 /* Function: strip
@@ -82,6 +83,8 @@ char *strip2(char *s){
  * returns: nothing
  */
 void parse(FILE * file){
+
+	a_instruction instr;
 	
 	char line[MAX_LINE_LENGTH] = {0};
 
@@ -90,6 +93,8 @@ void parse(FILE * file){
 	unsigned int line_num = 0;
 
 	unsigned int instr_num = 0;
+
+	add_predefined_symbols();
 
 	while (fgets(line, sizeof(line), file)) {
 
@@ -110,6 +115,10 @@ void parse(FILE * file){
 		if (is_Atype(line)) {
 
 				inst_type = 'A';
+
+				if (!parse_A_instruction(line, &instr)){
+    				exit_program(EXIT_INVALID_A_INSTR, line_num, line);
+ 				}
 
 				//printf("%c  %s\n", inst_type, line);
 
@@ -142,7 +151,7 @@ void parse(FILE * file){
 
 			}
 
-				printf("%u: %c  %s\n", instr_num, inst_type, line);
+				//printf("%u: %c  %s\n", instr_num, inst_type, line);
 
 
 		instr_num++;
@@ -186,4 +195,38 @@ char *extract_label(const char *line, char* label) {
 
 	return label;
 
+}
+
+void add_predefined_symbols() {
+	for (int i = 0; i < NUM_PREDEFINED_SYMBOLS; i++) {
+		predefined_symbol symbol = predefined_symbols[i];
+		symtable_insert(symbol.name, symbol.value);
+	}
+};
+
+bool parse_A_instruction(const char *line, a_instruction *instr) {
+	char s = (char*) malloc(sizeof(char) * strlen(line));
+
+	strcpy(s, line + 1);
+
+	char s_end = NULL;
+
+	long result = strtol(s, &s_end, 10);
+
+	if (s_end == s) {
+		//not a number
+		instr->a = malloc(strlen(line));
+
+		strcpy(instr->a, s);
+
+		instr->is_addr = false;
+
+	} else if (s_end != 0) {
+		return false;	
+	} else {
+		instr->addr = result;
+		instr->is_addr = true;
+	}
+
+	return true;
 }
