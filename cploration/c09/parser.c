@@ -1,24 +1,5 @@
 #include "parser.h"
 
-enum instr_type {
-	invalid = -1,
-	Atype,
-	Ctype
-};
-
-typedef struct {
-   opcode a:1;
-   opcode comp:7;
-   opcode dest:3;
-   opcode jump:3;
-} c_instruction;
-
-typedef struct {
-   opcode a:1;
-   hack_addr addr:15;
-   bool is_addr;
-} a_instruction;
-
 /* Function: strip
  * -------------
  * remove whitespace and comments from a line
@@ -205,26 +186,29 @@ void add_predefined_symbols() {
 };
 
 bool parse_A_instruction(const char *line, a_instruction *instr) {
-	char s = (char*) malloc(sizeof(char) * strlen(line));
+
+	char *s = malloc(strlen(line));
 
 	strcpy(s, line + 1);
 
-	char s_end = NULL;
+	char *s_end = NULL;
 
 	long result = strtol(s, &s_end, 10);
 
+	printf("%s\n", s_end);
+
 	if (s_end == s) {
 		//not a number
-		instr->a = malloc(strlen(line));
+		*instr->value.symbol = malloc(strlen(line));
 
-		strcpy(instr->a, s);
+		strcpy(instr->value.symbol, s);
 
 		instr->is_addr = false;
 
-	} else if (s_end != 0) {
+	} else if (*s_end != NULL) {
 		return false;	
 	} else {
-		instr->addr = result;
+		instr->value.addr = result;
 		instr->is_addr = true;
 	}
 

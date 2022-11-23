@@ -21,6 +21,37 @@
 typedef int16_t hack_addr;
 typedef int16_t opcode;
 
+
+enum instr_type {
+	invalid = -1,
+	Atype,
+	Ctype
+};
+
+typedef struct c_instruction { 
+   opcode a:1;
+   opcode comp:7;
+   opcode dest:3;
+   opcode jump:3;
+} c_instruction;
+
+typedef struct a_instruction {
+    union {
+        hack_addr addr;
+        char* symbol[MAX_LABEL_LENGTH];
+    } value;
+
+    bool is_addr;    
+} a_instruction;
+
+typedef struct instruction {
+   union {
+      a_instruction a;
+      c_instruction c;
+   } instr;
+   enum instr_type type;
+} instruction;
+
 /** function prototypes **/
 char *strip(char *s);
 
@@ -34,7 +65,7 @@ char *extract_label(const char *, char*);
 
 void add_predefined_symbols();
 
-bool parse_A_instruction(const char *line, a_instruction *instr)
+bool parse_A_instruction(const char *line, a_instruction *instr);
 
 /*redundant
 bool is_Ctype(const char *); */

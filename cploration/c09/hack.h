@@ -29,7 +29,7 @@ typedef enum symbol_id {
                 SYM_R15    =    15,
                 SYM_SCREEN = 16384,
                 SYM_KBD    = 24576
-               };
+               } symbol_id;
 
 typedef struct predefined_symbol {
                 char name[10];
