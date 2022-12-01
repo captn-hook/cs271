@@ -10,6 +10,8 @@
  */
 char *strip(char *s){	
 
+//	printf("strip: %s\n", s);
+
 	unsigned int x = strlen(s) + 1;
 
 	char s_new[x];
@@ -63,7 +65,7 @@ char *strip2(char *s){
  *
  * returns: nothing
  */
-void parse(FILE * file){
+int parse(FILE * file, instruction *instructions){
 
 	instruction instr;
 	
@@ -81,11 +83,15 @@ void parse(FILE * file){
 
 		line_num++;
 
+	//	printf("line number: %d\n" , line_num);
+
 		if (instr_num > MAX_INSTRUCTIONS) {
 			exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
 		}
 
 		strip(line);
+
+		//printf("line: %s\n", line);
 
 		if (*line == '\0') {
 
@@ -99,19 +105,28 @@ void parse(FILE * file){
     				exit_program(EXIT_INVALID_A_INSTR, line_num, line);
  				}
 
+
+				printf("A: %s\n", *instr.instr.a.value.symbol);
+
+
 			} else if (is_label(line)) {
 
 				extract_label(line, label);
 
+				
+				//printf("label: %s\n", label);
+
 				if (!isalpha(label[0])) {
 					//test driven development ig
-					strip2(line);
+					//strip2(line);
 					exit_program(EXIT_INVALID_LABEL, line_num, line);
 				} else if (symtable_find(label) != NULL) {
 					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
 				} else {
 
 				symtable_insert(label, instr_num);
+
+				//printf("A: %s\n", label);
 
 				continue;
 				}
@@ -120,16 +135,39 @@ void parse(FILE * file){
 			} else {
 
 				instr.type = Ctype;
+				char tmp_line[MAX_LINE_LENGTH] = {0};
 
+				strcpy(tmp_line, line);
+
+				parse_C_instruction(tmp_line, &instr.instr.c);
+
+				if (instr.instr.c.dest == -1) {
+					exit_program(EXIT_INVALID_C_DEST, line_num, line);
+				} else if (instr.instr.c.comp == -1) {
+					exit_program(EXIT_INVALID_C_COMP, line_num, line);
+				} else if (instr.instr.c.jump == -1) {
+					exit_program(EXIT_INVALID_C_JUMP, line_num, line);
+				}
+
+				if (instr.instr.c.a == 0)
+					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, instr.instr.c.comp, instr.instr.c.jump);
+				else {
+					//clear last bit of int 
+					int newC = instr.instr.c.comp & 0x3F;
+					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, newC, instr.instr.c.jump);
+				}
+				
 			}
 
 
-		instr_num++;
-			
+		instructions[instr_num++] = instr;
+
 		}
 
 
 	}
+
+	return instr_num;
 	
 }
 
@@ -199,4 +237,48 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 	}
 
 	return true;
+}
+
+void parse_C_instruction(char *line, c_instruction *instr) {
+	
+	char *temp;
+	char *jump;
+	char *comp;
+	char *dest;
+
+	//printf("line: %s\n", line);
+	
+	//split temp / jump
+	temp = strtok(line, ";");
+	//split dest / comp (if comp == NULL, then dest == comp
+	jump = strtok(NULL, ";");
+
+	if (jump != NULL) {
+			
+		dest = strtok(line, "=");
+
+		comp = strtok(NULL, "=");
+
+	} else {
+		dest = strtok(line, "=");
+
+		comp = strtok(NULL, "=");
+	}
+
+	int b = 0;
+
+//set instr
+	int a = 0;
+	if (comp == NULL) {
+		instr->dest = str_to_destid(dest);
+		instr->comp = str_to_compid(dest, &a);
+		instr->jump = str_to_jumpid(jump);
+	} else {
+		instr->dest = str_to_destid(dest);
+		instr->comp = str_to_compid(comp, &a);
+		instr->jump = str_to_jumpid(jump);
+	}
+
+	instr->a = a;
+
 }
