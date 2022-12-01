@@ -99,9 +99,6 @@ void parse(FILE * file){
     				exit_program(EXIT_INVALID_A_INSTR, line_num, line);
  				}
 
-				//symtable_insert(instr.instr.a.value.symbol, instr_num);
-				//printf("%c  %s\n", instr.instr.a.value.symbol, line);
-
 			} else if (is_label(line)) {
 
 				extract_label(line, label);
@@ -119,18 +116,12 @@ void parse(FILE * file){
 				continue;
 				}
 				
-			
-				//printf("%c  %s\n", inst_type, label);
 
 			} else {
 
 				instr.type = Ctype;
 
-				//printf("%c  %s\n", inst_type, line);
-
 			}
-
-				//printf("%u: %c  %s\n", instr_num, inst_type, line);
 
 
 		instr_num++;
@@ -192,11 +183,8 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 	char *s_end = NULL;
 
 	long result = strtol(s, &s_end, 10);
-
-	//printf("%s\n", s_end);
-
-	if (strcmp(s, s_end)) {
-		//not a number
+	
+	if (s == s_end) {
 		*instr->value.symbol = (char*)malloc(strlen(line));
 
 		strcpy(*instr->value.symbol, s);

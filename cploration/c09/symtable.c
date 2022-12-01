@@ -11,7 +11,7 @@ int hash(char *str){
     unsigned long hash = 5381;
     int c = 0;
 
-    while (c == *str++)
+    while (c = *str++)
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash % SYMBOL_TABLE_SIZE;
@@ -46,11 +46,12 @@ struct Symbol *symtable_find(char * key){
 
     //get the hash 
     int hashIndex = hash(key);  
-	
+
     //move in array until an empty 
     while(hashArray[hashIndex] != NULL) {
 	
         if(hashArray[hashIndex]->name == key)
+
         return hashArray[hashIndex]; 
 			
         //go to next cell
@@ -59,7 +60,7 @@ struct Symbol *symtable_find(char * key){
         //wrap around the table
         hashIndex %= SYMBOL_TABLE_SIZE;
     }        
-	
+    
     return NULL;        
 }
 
@@ -71,10 +72,9 @@ void symtable_display_table(){
         if(hashArray[i] != NULL) {
             printf(" (%s,%d)\n", hashArray[i]->name, hashArray[i]->addr);
          } else {
-         //   printf(" ~~ ");
+
     }
 	
-    //printf("\n");
 }
 }
 
