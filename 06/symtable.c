@@ -11,7 +11,7 @@ int hash(char *str){
     unsigned long hash = 5381;
     int c = 0;
 
-    while (c = *str++)
+    while ( ( c = *str++ ) != 0 )
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash % SYMBOL_TABLE_SIZE;
@@ -19,6 +19,10 @@ int hash(char *str){
 
 
 void symtable_insert(char* key, hack_addr addr) {
+
+    if (strcmp(key, "screen.setcolor") == 0) {
+        printf("symtable_insert: %s\n", key);
+    }
     
     struct Symbol *item = (struct Symbol*) malloc(sizeof(struct Symbol));
     item->addr = addr;  
@@ -37,6 +41,9 @@ void symtable_insert(char* key, hack_addr addr) {
         //wrap around the table
         hashIndex %= SYMBOL_TABLE_SIZE;
     }
+
+    //printf("inserting %s at %d\n", key, hashIndex);
+   // printf("hashIndex: %s\n", hashArray[hashIndex]->name);
 	
     hashArray[hashIndex] = item;
 
@@ -47,12 +54,22 @@ struct Symbol *symtable_find(char * key){
     //get the hash 
     int hashIndex = hash(key);  
 
+   // printf("looking for %s at %d\n", key, hashIndex);
+    //printf("hashIndex: %d, hasharray: %s\n", hashIndex, hashArray[hashIndex]->name);
+
     //move in array until an empty 
     while(hashArray[hashIndex] != NULL) {
-	
-        if(hashArray[hashIndex]->name == key)
 
-        return hashArray[hashIndex]; 
+       // printf("hashIndex: %d, key: %s, name: %s\n", hashIndex, key, hashArray[hashIndex]->name);
+	
+        if(strcmp(hashArray[hashIndex]->name, key) == 0) {
+            
+            //printf("found: %s\n", key);
+     //     printf("return hashIndex: %d, hasharray: %s\n", hashIndex, hashArray[hashIndex]->name);
+
+            return hashArray[hashIndex]; 
+            
+        }
 			
         //go to next cell
         ++hashIndex;
@@ -60,7 +77,24 @@ struct Symbol *symtable_find(char * key){
         //wrap around the table
         hashIndex %= SYMBOL_TABLE_SIZE;
     }        
-    
+
+    if (strcmp(key, "screen.setcolor") == 0) {
+        printf("screen.setcolor not found\n");
+    printf("not found: %s\n", key);    
+    printf("hashIndex: %d\n", hashIndex);
+
+    printf("hashArray[hashIndex]: %s\n", hashArray[hashIndex]->name);
+    }
+/*
+    printf("hashArray[hashIndex + 1]: %s\n", hashArray[hashIndex + 1]->name);
+
+
+    printf("hashArray[hashIndex + 2]: %s\n", hashArray[hashIndex + 2]->name);
+
+
+    printf("hashArray[hashIndex + 3]: %s\n", hashArray[hashIndex + 3]->name);
+*/
+ //   printf("nuffin");
     return NULL;        
 }
 

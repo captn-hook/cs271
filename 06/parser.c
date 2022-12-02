@@ -107,9 +107,11 @@ int parse(FILE * file, instruction *instructions){
 
 
 				if (instr.instr.a.is_addr) {
-					printf("A: %d\n", instr.instr.a.value.addr);
+					printf("");	
+					//printf("A: %d\n", instr.instr.a.value.addr);
 				} else {
-					printf("A: %s\n", *instr.instr.a.value.symbol);					
+					printf("");	
+					//printf("A: %s\n", *instr.instr.a.value.symbol);					
 				}
 
 
@@ -127,7 +129,7 @@ int parse(FILE * file, instruction *instructions){
 				} else if (symtable_find(label) != NULL) {
 					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
 				} else {
-
+					printf("inserting label: %s\n number %d\n", label, instr_num);
 				symtable_insert(label, instr_num);
 
 				//printf("A: %s\n", label);
@@ -154,7 +156,8 @@ int parse(FILE * file, instruction *instructions){
 				}
 
 				if (instr.instr.c.a == 0)
-					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, instr.instr.c.comp, instr.instr.c.jump);
+					//printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, instr.instr.c.comp, instr.instr.c.jump);
+				printf("");	
 				else {
 					//clear last bit of int 
 					//printf("%d\n", instr.instr.c.comp);
@@ -164,7 +167,8 @@ int parse(FILE * file, instruction *instructions){
 					} else if (abs(instr.instr.c.comp) < 64) {
 						newC = instr.instr.c.comp & 0x3F;
 					} 
-					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, newC, instr.instr.c.jump);
+					printf("");	
+//					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, newC, instr.instr.c.jump);
 				}
 				
 			}
@@ -227,7 +231,6 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 
 	char *s = (char*)malloc(strlen(line));
 
-
 	strcpy(s, line + 1);
 
 	char *s_end = NULL;
@@ -252,7 +255,7 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 
 void parse_C_instruction(char *line, c_instruction *instr) {
 	
-	char *temp;
+	//char *temp;
 	char *jump;
 	char *comp;
 	char *dest;
@@ -260,7 +263,7 @@ void parse_C_instruction(char *line, c_instruction *instr) {
 	//printf("line: %s\n", line);
 	
 	//split temp / jump
-	temp = strtok(line, ";");
+	strtok(line, ";");
 	//split dest / comp (if comp == NULL, then dest == comp
 	jump = strtok(NULL, ";");
 
@@ -315,18 +318,33 @@ void parse_C_instruction(char *line, c_instruction *instr) {
 
 				//fprintf(out, "%016d", instr.instr.a.value.addr);
 			} else {
+				bool pr = false;
+    			if (strcmp(*instr.instr.a.value.symbol, "screen.setcolor") == 0) {
+					printf("screen.setcolor\n");
+					pr = true;
+				}
+    
 				
-				if (symtable_ask(*instr.instr.a.value.symbol)) {
+				if (symtable_find(*instr.instr.a.value.symbol) != NULL) {
 					op = symtable_get_addr(*instr.instr.a.value.symbol);
-			//		printf("FS:%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(op));
-
+					if (pr) {
+						printf("found: %d\n", op);
+				
+					printf("FS:%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(op));
+	}
 					}
 				else {
+					//printf("nuffin\n");
 					op = (opcode)var_addr;
+					printf("inserting %s at var_addr: %d\n", *instr.instr.a.value.symbol, var_addr);
 					symtable_insert(*instr.instr.a.value.symbol, var_addr++);
-
-			//		printf("NS:%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(op));
-
+					free(*instr.instr.a.value.symbol);
+if (pr) {
+						printf("not found: %d\n", op);
+				
+					printf("NF:%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(op));
+				printf("NS:%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", OPCODE_TO_BINARY(op));
+}
 				}
 				//fprintf(out, "%016d", symtable_get(*instr.instr.a.value.symbol));
 			}

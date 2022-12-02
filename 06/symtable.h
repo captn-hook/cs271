@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define SYMBOL_TABLE_SIZE 1000
+#define SYMBOL_TABLE_SIZE 10000
 #define MAX_NAME_SIZE 100
 
 typedef int16_t hack_addr;
