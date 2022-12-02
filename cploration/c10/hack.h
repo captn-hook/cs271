@@ -166,6 +166,7 @@ static inline dest_id str_to_destid(const char *s){
 
 static inline comp_id str_to_compid(const char *s, int *a) {
     comp_id id = CMP_INVALID;
+    *a = 0;
     if (s == NULL) {
         id = CMP_INVALID;
     } else if (strcmp(s, "0") == 0) {
@@ -206,32 +207,45 @@ static inline comp_id str_to_compid(const char *s, int *a) {
         id = CMP_DORA;
     } else if (strcmp(s, "M") == 0) {
         id = CMP_M;
+        id = CMP_A;
+        *a = 1;
     } else if (strcmp(s, "!M") == 0) {
         id = CMP_NOTM;
+        id = CMP_NOTA;
+        *a = 1;
     } else if (strcmp(s, "-M") == 0) {
         id = CMP_NEGM;
+        id = CMP_NEGA;
+        *a = 1;
     } else if (strcmp(s, "M+1") == 0) {
         id = CMP_MPLUS1;
+        id = CMP_APLUS1;
+        *a = 1;
     } else if (strcmp(s, "M-1") == 0) {
         id = CMP_MMINUS1;
+        id = CMP_AMINUS1;
+        *a = 1;
     } else if (strcmp(s, "D+M") == 0) {
         id = CMP_DPLUSM;
+        id = CMP_DPLUSA;
+        *a = 1;
     } else if (strcmp(s, "D-M") == 0) {
         id = CMP_DMINUSM;
+        id = CMP_DMINUSA;
+        *a = 1;
     } else if (strcmp(s, "M-D") == 0) {
         id = CMP_MMINUSD;
+        id = CMP_AMINUSD;
+        *a = 1;
     } else if (strcmp(s, "D&M") == 0) {
         id = CMP_DANDM;
+        id = CMP_DANDA;
+        *a = 1;
     } else if (strcmp(s, "D|M") == 0) {
         id = CMP_DORM;
-    };
-
-    if (id > 63) {
+        id = CMP_DORA;
         *a = 1;
-    } else {
-        *a = 0;
-    }
-
+    };
     return id;
 }
 

@@ -106,7 +106,11 @@ int parse(FILE * file, instruction *instructions){
  				}
 
 
-				printf("A: %s\n", *instr.instr.a.value.symbol);
+				if (instr.instr.a.is_addr) {
+					printf("A: %d\n", instr.instr.a.value.addr);
+				} else {
+					printf("A: %s\n", *instr.instr.a.value.symbol);					
+				}
 
 
 			} else if (is_label(line)) {
@@ -118,7 +122,7 @@ int parse(FILE * file, instruction *instructions){
 
 				if (!isalpha(label[0])) {
 					//test driven development ig
-					//strip2(line);
+					strip2(line);
 					exit_program(EXIT_INVALID_LABEL, line_num, line);
 				} else if (symtable_find(label) != NULL) {
 					exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
@@ -153,7 +157,13 @@ int parse(FILE * file, instruction *instructions){
 					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, instr.instr.c.comp, instr.instr.c.jump);
 				else {
 					//clear last bit of int 
-					int newC = instr.instr.c.comp & 0x3F;
+					//printf("%d\n", instr.instr.c.comp);
+					int newC;
+					if (abs(instr.instr.c.comp) < 16) {
+						newC = instr.instr.c.comp & 0xF;
+					} else if (abs(instr.instr.c.comp) < 64) {
+						newC = instr.instr.c.comp & 0x3F;
+					} 
 					printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, newC, instr.instr.c.jump);
 				}
 				
@@ -214,7 +224,9 @@ void add_predefined_symbols() {
 
 bool parse_A_instruction(const char *line, a_instruction *instr) {
 
+
 	char *s = (char*)malloc(strlen(line));
+
 
 	strcpy(s, line + 1);
 
@@ -235,7 +247,6 @@ bool parse_A_instruction(const char *line, a_instruction *instr) {
 		instr->value.addr = result;
 		instr->is_addr = true;
 	}
-
 	return true;
 }
 
@@ -265,12 +276,11 @@ void parse_C_instruction(char *line, c_instruction *instr) {
 		comp = strtok(NULL, "=");
 	}
 
-	int b = 0;
+	//printf("dest: %s\n", dest);
 
-//set instr
 	int a = 0;
 	if (comp == NULL) {
-		instr->dest = str_to_destid(dest);
+		instr->dest = str_to_destid("0");
 		instr->comp = str_to_compid(dest, &a);
 		instr->jump = str_to_jumpid(jump);
 	} else {
