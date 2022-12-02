@@ -28,7 +28,7 @@ int main(int argc, const char *argv[])
 
 	fclose(fin);
 
-	printf("\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+//	printf("\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
 
 	assemble(argv[1], instructions, num_instructions);
 
